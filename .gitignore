@@ -1,0 +1,23 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Local database and secrets
+store.db
+.env
+*.db
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Node (not part of the Flask app)
+node_modules/
+package.json
+package-lock.json

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Order #{{ order.id }} | The Jan Code{% endblock %}
+
+{% block content %}
+<section class="order-detail-section">
+    <div class="page-header">
+        <h1>Order #{{ order.id }}</h1>
+    </div>
+
+    <div class="order-info">
+        <div class="info-box">
+            <h3>Order Status</h3>
+            <p><span class="status">{{ order.status }}</span></p>
+            <p class="mt-1 text-muted">Created: {{ order.created_at }}</p>
+        </div>
+
+        <div class="info-box">
+            <h3>Tracking Information</h3>
+            <p>Tracking #: <strong>{{ order.tracking }}</strong></p>
+        </div>
+    </div>
+
+    <div class="order-total">
+        <h3>Total: ${{ '%.2f'|format(order.total) }}</h3>
+    </div>
+
+    <a href="/orders" class="btn btn-ghost">Back to Orders</a>
+</section>
+{% endblock %}

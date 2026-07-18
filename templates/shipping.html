@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Shipping | The Jan Code{% endblock %}
+
+{% block content %}
+<section class="info-section">
+    <div class="page-header">
+        <h1>Shipping Information</h1>
+        <p>Insured delivery worldwide. Choose sea or air shipping for goods you source with us.</p>
+    </div>
+
+    <div class="info-container">
+        <div class="info-box">
+            <h2><i class="fas fa-earth-americas text-muted"></i> Worldwide Shipping</h2>
+            <p>We ship to virtually every country in the world. We partner with trusted international carriers to ensure your package arrives safely and on time.</p>
+        </div>
+
+        <div class="info-box">
+            <h2><i class="fas fa-box text-muted"></i> Packaging &amp; Shipping Options</h2>
+            <ul>
+                <li>
+                    <strong>Sea Shipping</strong> — charged by volume (CBM)<br>
+                    <strong>$260 per CBM</strong> · 30–45 days · best for bulk orders and lower cost
+                </li>
+                <li>
+                    <strong>Air Shipping</strong> — charged by weight (kg)<br>
+                    <strong>$19 per kg</strong> · 7–14 days · faster delivery when you need it sooner
+                </li>
+            </ul>
+            <p class="text-muted mt-2">Transit times are estimates from dispatch and can vary by destination and customs. Final quotes depend on total CBM (sea) or total kg (air).</p>
+        </div>
+
+        <div class="info-box">
+            <h2><i class="fas fa-location-dot text-muted"></i> Order Tracking</h2>
+            <p>All orders include a unique tracking number. You can track your package in real time from dispatch to delivery.</p>
+        </div>
+
+        <div class="info-box">
+            <h2><i class="fas fa-boxes-stacked text-muted"></i> Package Forwarding</h2>
+            <p>We consolidate multiple purchases and ship them together to save you money on shipping costs.</p>
+        </div>
+
+        <div class="info-box">
+            <h2><i class="fas fa-shield-halved text-muted"></i> Shipping Protection</h2>
+            <p>All packages are insured and tracked. In case of loss or damage, we'll work with the carrier to resolve the issue.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

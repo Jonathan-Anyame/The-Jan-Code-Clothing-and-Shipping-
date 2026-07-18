@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}My Orders | The Jan Code{% endblock %}
+
+{% block content %}
+<section class="orders-section">
+    <div class="page-header">
+        <h1>My Orders</h1>
+        <p>Track and review your purchases</p>
+    </div>
+
+    {% if orders %}
+    <div class="orders-container">
+        {% for order in orders %}
+        <div class="order-card">
+            <div class="order-header">
+                <h3>Order #{{ order.id }}</h3>
+                <span class="status">{{ order.status }}</span>
+            </div>
+            <p>Date: {{ order.created_at }}</p>
+            <p>Total: <strong>${{ '%.2f'|format(order.total) }}</strong></p>
+            <p>Tracking: <strong>{{ order.tracking }}</strong></p>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-receipt"></i>
+        <h2>No orders yet</h2>
+        <p>When you place an order, it will show up here.</p>
+        <a href="/buy-from-china" class="btn btn-primary mt-2">Source Goods</a>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} | The Jan Code{% endblock %}
+
+{% block content %}
+<section class="product-detail">
+    <div class="product-container">
+        <div class="product-image">
+            <img src="{{ url_for('static', filename='image/' + product.image) }}" alt="{{ product.name }}">
+        </div>
+
+        <div class="product-info">
+            <h1>{{ product.name }}</h1>
+            <p class="category">Category: <strong>{{ product.category }}</strong></p>
+            <p class="price">${{ '%.2f'|format(product.price) }}</p>
+            <p class="description">{{ product.description }}</p>
+            <p class="stock">
+                {% if product.stock > 0 %}
+                    <span class="text-success"><i class="fas fa-check-circle"></i> In Stock ({{ product.stock }} available)</span>
+                {% else %}
+                    <span class="text-danger"><i class="fas fa-times-circle"></i> Out of Stock</span>
+                {% endif %}
+            </p>
+
+            {% if product.stock > 0 %}
+            <div class="quantity-selector">
+                <label for="quantity">Quantity</label>
+                <input type="number" id="quantity" min="1" value="1" max="{{ product.stock }}">
+            </div>
+            {% endif %}
+
+            <div class="product-actions">
+                {% if current_user and product.stock > 0 %}
+                <button class="btn btn-primary" onclick="addToCart({{ product.id }})">
+                    <i class="fas fa-shopping-bag"></i> Add to Cart
+                </button>
+                {% elif product.stock > 0 %}
+                <a href="/login" class="btn btn-primary">Login to Buy</a>
+                {% endif %}
+                <a href="/shop" class="btn btn-ghost">Back to Shop</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

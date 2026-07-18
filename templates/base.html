@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}The Jan Code | Your Own Code{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}The Jan Code — find products in China and ship them worldwide.{% endblock %}">
+    <link rel="icon" href="{{ url_for('static', filename='image/logo.png') }}" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+<header role="banner">
+    <nav class="navbar" role="navigation" aria-label="Main navigation" id="navbar">
+        <a href="/" class="logo">
+            <img src="{{ url_for('static', filename='image/logo.png') }}" alt="The Jan Code logo">
+            <span class="logo-text">The Jan <span>Code</span></span>
+        </a>
+
+        <div class="hamburger" id="hamburger" aria-label="Toggle menu" role="button" tabindex="0">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="/" class="{% if request.path == '/' %}active{% endif %}">Home</a></li>
+            <li><a href="/buy-from-china" class="{% if request.path == '/buy-from-china' %}active{% endif %}">Sourcing</a></li>
+            <li><a href="/shipping" class="{% if request.path == '/shipping' %}active{% endif %}">Shipping</a></li>
+            <li><a href="/contact" class="{% if request.path == '/contact' %}active{% endif %}">Contact</a></li>
+            {% if current_user %}
+                <li><a href="/orders" class="{% if request.path.startswith('/order') %}active{% endif %}">Orders</a></li>
+                {% if current_user == 'admin' %}
+                    <li><a href="/admin">Admin</a></li>
+                {% endif %}
+                <li><a href="/logout">Logout</a></li>
+            {% else %}
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register" class="nav-cta">Register</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</header>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-brand">
+            <h2>The Jan Code</h2>
+            <p>Your Own Code. We find products in China and ship them worldwide.</p>
+        </div>
+        <div class="footer-links">
+            <h3>Explore</h3>
+            <a href="/buy-from-china">Sourcing</a>
+            <a href="/shipping">Shipping</a>
+            <a href="/contact">Contact</a>
+        </div>
+        <div class="footer-contact">
+            <h3>Connect</h3>
+            <a href="https://www.instagram.com/the.jan.code" target="_blank" rel="noopener">
+                <i class="fab fa-instagram"></i> @the.jan.code
+            </a>
+            <a href="https://wa.me/8613535824547" target="_blank" rel="noopener">
+                <i class="fab fa-whatsapp"></i> +86 135 3582 4547
+            </a>
+            <a href="mailto:nyamejonathan9@gmail.com">
+                <i class="fas fa-envelope"></i> nyamejonathan9@gmail.com
+            </a>
+        </div>
+    </div>
+    <hr>
+    <p class="copyright">© 2026 The Jan Code. All Rights Reserved.</p>
+</footer>
+
+<div class="toast-container" id="toastContainer"></div>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

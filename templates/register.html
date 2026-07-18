@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Register | The Jan Code{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="auth-container">
+        <h1>Create Account</h1>
+        <p class="auth-subtitle">Join The Jan Code community</p>
+
+        {% if error %}<div class="auth-error">{{ error }}</div>{% endif %}
+
+        <form method="POST">
+            <input type="text" name="username" placeholder="Username" required autocomplete="username">
+            <input type="email" name="email" placeholder="Email" required autocomplete="email">
+            <input type="password" name="password" placeholder="Password" required autocomplete="new-password">
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+
+        <p>Already have an account? <a href="/login">Login here</a></p>
+    </div>
+</section>
+{% endblock %}

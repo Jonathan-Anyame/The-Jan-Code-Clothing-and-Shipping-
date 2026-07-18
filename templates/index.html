@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}The Jan Code | Find & Ship Products Worldwide{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <img src="{{ url_for('static', filename='image/hero.jpg') }}" alt="Global sourcing and shipping" class="hero-image">
+    <div class="overlay">
+        <span class="hero-badge">Sourcing &amp; Shipping</span>
+        <h1>The Jan Code</h1>
+        <h2>Your Own Code</h2>
+        <p>We find products from trusted suppliers in China and ship them worldwide — tell us what you need, we handle the rest.</p>
+        <div class="hero-actions">
+            <a href="/buy-from-china" class="btn btn-primary">Find Products</a>
+            <a href="/shipping" class="btn btn-secondary">Shipping Info</a>
+        </div>
+    </div>
+</section>
+
+<section class="services">
+    <h2>What We Offer</h2>
+    <div class="service-container">
+        <div class="card">
+            <div class="service-icon"><i class="fas fa-magnifying-glass"></i></div>
+            <h3>Product Finding</h3>
+            <p>Tell us what you need — we locate the right suppliers and get competitive quotes for you.</p>
+            <a href="/buy-from-china" class="btn btn-ghost btn-sm mt-2">Learn more</a>
+        </div>
+        <div class="card">
+            <div class="service-icon"><i class="fas fa-globe-asia"></i></div>
+            <h3>Buy From China</h3>
+            <p>We purchase products from trusted Chinese suppliers on your behalf and manage quality checks.</p>
+            <a href="/buy-from-china" class="btn btn-ghost btn-sm mt-2">How it works</a>
+        </div>
+        <div class="card">
+            <div class="service-icon"><i class="fas fa-truck-fast"></i></div>
+            <h3>Worldwide Shipping</h3>
+            <p>Sea from $260/CBM (30–45 days) or air from $19/kg (7–14 days) — with tracking and care.</p>
+            <a href="/shipping" class="btn btn-ghost btn-sm mt-2">Shipping info</a>
+        </div>
+        <div class="card">
+            <div class="service-icon"><i class="fas fa-boxes-stacked"></i></div>
+            <h3>Package Forwarding</h3>
+            <p>Ship multiple purchases together and save on shipping costs.</p>
+            <a href="/shipping" class="btn btn-ghost btn-sm mt-2">How it works</a>
+        </div>
+        <div class="card">
+            <div class="service-icon"><i class="fas fa-location-dot"></i></div>
+            <h3>Order Tracking</h3>
+            <p>Track your package from dispatch to delivery.</p>
+            <a href="/contact" class="btn btn-ghost btn-sm mt-2">Get help</a>
+        </div>
+        <div class="card">
+            <div class="service-icon"><i class="fas fa-handshake"></i></div>
+            <h3>Trusted Suppliers</h3>
+            <p>We work with verified suppliers and check quality before your goods leave China.</p>
+            <a href="/contact" class="btn btn-ghost btn-sm mt-2">Contact us</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

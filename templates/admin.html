@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard | The Jan Code{% endblock %}
+
+{% block content %}
+<section class="admin-section">
+    <div class="page-header">
+        <h1>Admin Dashboard</h1>
+        <p>Manage products, orders, and users</p>
+    </div>
+
+    <div class="admin-tabs">
+        <button class="tab-btn active" onclick="showTab('products', this)">Products</button>
+        <button class="tab-btn" onclick="showTab('orders', this)">Orders</button>
+        <button class="tab-btn" onclick="showTab('users', this)">Users</button>
+    </div>
+
+    <div id="products" class="tab-content active">
+        <h2>Manage Products</h2>
+        <button class="btn btn-primary btn-sm" onclick="showAddProduct()">Add New Product</button>
+
+        <div id="addProductForm" style="display:none;" class="form-box">
+            <input type="text" id="prodName" placeholder="Product Name" required>
+            <input type="text" id="prodDesc" placeholder="Description" required>
+            <input type="number" id="prodPrice" placeholder="Price" step="0.01" required>
+            <input type="text" id="prodCategory" placeholder="Category" required>
+            <input type="number" id="prodStock" placeholder="Stock" required>
+            <input type="text" id="prodImage" placeholder="Image filename" required>
+            <button class="btn btn-primary" onclick="addProduct()">Create Product</button>
+        </div>
+
+        <div style="overflow-x: auto; margin-top: 1.5rem;">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Category</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td>{{ product.id }}</td>
+                        <td>{{ product.name }}</td>
+                        <td>${{ '%.2f'|format(product.price) }}</td>
+                        <td>{{ product.stock }}</td>
+                        <td>{{ product.category }}</td>
+                        <td>
+                            <button onclick="deleteProduct({{ product.id }})">Delete</button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="6" class="text-muted">No products yet</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="orders" class="tab-content">
+        <h2>Manage Orders</h2>
+        <div style="overflow-x: auto;">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Tracking</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>#{{ order.id }}</td>
+                        <td>${{ '%.2f'|format(order.total) }}</td>
+                        <td>
+                            <select onchange="updateOrderStatus({{ order.id }}, this.value)">
+                                <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
+                                <option value="processing" {% if order.status == 'processing' %}selected{% endif %}>Processing</option>
+                                <option value="shipped" {% if order.status == 'shipped' %}selected{% endif %}>Shipped</option>
+                                <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Delivered</option>
+                            </select>
+                        </td>
+                        <td>{{ order.tracking }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="4" class="text-muted">No orders yet</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="users" class="tab-content">
+        <h2>Users</h2>
+        <div style="overflow-x: auto;">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="3" class="text-muted">No users yet</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function showTab(tabName, btn) {
+    document.querySelectorAll('.tab-content').forEach(function (t) { t.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+    document.getElementById(tabName).classList.add('active');
+    if (btn) btn.classList.add('active');
+}
+
+function showAddProduct() {
+    var form = document.getElementById('addProductForm');
+    form.style.display = form.style.display === 'none' ? 'grid' : 'none';
+}
+
+function addProduct() {
+    var data = {
+        name: document.getElementById('prodName').value,
+        description: document.getElementById('prodDesc').value,
+        price: document.getElementById('prodPrice').value,
+        category: document.getElementById('prodCategory').value,
+        stock: document.getElementById('prodStock').value,
+        image: document.getElementById('prodImage').value
+    };
+    fetch('/api/admin/product', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    }).then(function (r) { return r.json(); }).then(function (d) {
+        if (d.success) {
+            showToast('Product added!', 'success');
+            setTimeout(function () { location.reload(); }, 600);
+        } else {
+            showToast(d.message || 'Failed to add product', 'error');
+        }
+    }).catch(function () {
+        showToast('Admin API not available', 'error');
+    });
+}
+
+function deleteProduct(productId) {
+    if (confirm('Are you sure?')) {
+        fetch('/api/admin/product/' + productId, { method: 'DELETE' })
+            .then(function () { location.reload(); })
+            .catch(function () { showToast('Admin API not available', 'error'); });
+    }
+}
+
+function updateOrderStatus(orderId, status) {
+    fetch('/api/admin/order/' + orderId + '/status', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: status })
+    }).then(function (r) { return r.json(); }).then(function (d) {
+        if (d.success) showToast('Status updated!', 'success');
+        else showToast('Update failed', 'error');
+    }).catch(function () {
+        showToast('Admin API not available', 'error');
+    });
+}
+</script>
+{% endblock %}

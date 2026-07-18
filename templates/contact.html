@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us | The Jan Code{% endblock %}
+
+{% block content %}
+<section class="contact-section">
+    <div class="page-header">
+        <h1>Contact Us</h1>
+        <p>Need help finding products or shipping goods? Reach out — we are here to help.</p>
+    </div>
+
+    <div class="contact-container">
+        <div class="contact-info">
+            <h2>Get in Touch</h2>
+            <p>
+                <a href="https://wa.me/8613535824547" target="_blank" rel="noopener">
+                    <i class="fab fa-whatsapp"></i>
+                    WhatsApp: +86 135 3582 4547
+                </a>
+            </p>
+            <p>
+                <a href="mailto:nyamejonathan9@gmail.com">
+                    <i class="fas fa-envelope"></i>
+                    Email: nyamejonathan9@gmail.com
+                </a>
+            </p>
+            <p>
+                <a href="https://www.instagram.com/the.jan.code" target="_blank" rel="noopener">
+                    <i class="fab fa-instagram"></i>
+                    Instagram: @the.jan.code
+                </a>
+            </p>
+        </div>
+
+        <div class="contact-form">
+            <h2>Send us a Message</h2>
+            <form onsubmit="event.preventDefault(); showToast('Message sent! We will get back to you soon.', 'success'); this.reset();">
+                <input type="text" placeholder="Your Name" required>
+                <input type="email" placeholder="Your Email" required>
+                <textarea placeholder="Your Message" rows="5" required></textarea>
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
