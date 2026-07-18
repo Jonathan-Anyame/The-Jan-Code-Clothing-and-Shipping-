@@ -4,6 +4,17 @@ Flask web app for **The Jan Code** — product sourcing from China, clothing & g
 
 > **Your Own Code.** We find products from trusted suppliers in China and ship them worldwide.
 
+## Deploy live (public website)
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Jonathan-Anyame/The-Jan-Code-Clothing-and-Shipping-)
+
+1. Click **Deploy to Render** (free account with GitHub login).
+2. Keep the defaults and click **Apply**.
+3. Wait a few minutes — Render will give you a public URL like  
+   `https://the-jan-code.onrender.com`
+
+> Free tier sleeps after inactivity; the first visit after sleep can take ~30–60 seconds.
+
 ## Live preview (screenshots)
 
 ### Home
