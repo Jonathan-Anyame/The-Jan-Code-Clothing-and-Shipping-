@@ -2,7 +2,8 @@
 
 Flask web app for **The Jan Code** — product sourcing from China, clothing & goods, and worldwide shipping.
 
-> **Your Own Code.** We find products from trusted suppliers in China and ship them worldwide.
+> **Your Own Code.** We find products from trusted suppliers in China and ship them worldwide.Educatonal Purpose only
+> 
 
 ## Live preview (screenshots)
 
