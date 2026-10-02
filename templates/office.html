@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}Office | The Jan Code{% endblock %}
+
+{% block content %}
+<section class="admin-section">
+    <div class="page-header">
+        <h1>Office</h1>
+        <p>Quote/contact leads and shipment tracking. <a href="{{ url_for('office_logout') }}">Log out</a></p>
+    </div>
+
+    <h2>Shipments</h2>
+    <form class="form-box form-box-wide" method="post">
+        <input type="hidden" name="action" value="save_shipment">
+        <div class="form-row">
+            <div>
+                <label for="tracking_id">Tracking ID</label>
+                <input id="tracking_id" name="tracking_id" placeholder="{{ next_id }} (leave blank to auto)">
+            </div>
+            <div>
+                <label for="customer_name">Customer</label>
+                <input id="customer_name" name="customer_name">
+            </div>
+        </div>
+        <div class="form-row">
+            <div>
+                <label for="destination">Destination</label>
+                <input id="destination" name="destination" placeholder="Accra, Ghana">
+            </div>
+            <div>
+                <label for="method">Method</label>
+                <select id="method" name="method">
+                    <option>Sea</option>
+                    <option>Air</option>
+                    <option>Other</option>
+                </select>
+            </div>
+            <div>
+                <label for="status">Status</label>
+                <select id="status" name="status">
+                    {% for s in statuses %}
+                    <option>{{ s }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <label for="note">Note (shown to customer)</label>
+        <input id="note" name="note" placeholder="Left factory / arrived at airport…">
+        <button type="submit" class="btn btn-primary btn-sm">Save shipment</button>
+    </form>
+
+    <div class="table-scroll">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Customer</th>
+                    <th>To</th>
+                    <th>Method</th>
+                    <th>Status</th>
+                    <th>Updated</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in shipments %}
+                <tr>
+                    <td><a href="{{ url_for('track', id=s.tracking_id) }}">{{ s.tracking_id }}</a></td>
+                    <td>{{ s.customer_name }}</td>
+                    <td>{{ s.destination }}</td>
+                    <td>{{ s.method }}</td>
+                    <td>{{ s.status }}</td>
+                    <td>{{ s.updated_at }}</td>
+                    <td>
+                        <form method="post" onsubmit="return confirm('Delete {{ s.tracking_id }}?');">
+                            <input type="hidden" name="action" value="delete_shipment">
+                            <input type="hidden" name="tracking_id" value="{{ s.tracking_id }}">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="7">No shipments yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h2 class="mt-2">Leads</h2>
+    <div class="table-scroll">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>When</th>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lead in leads %}
+                <tr>
+                    <td>{{ lead.created_at }}</td>
+                    <td>{{ lead.kind }}</td>
+                    <td>{{ lead.name }}<br><span class="text-muted">{{ lead.phone }}</span></td>
+                    <td>{{ lead.email }}</td>
+                    <td>
+                        {% if lead.product %}<strong>{{ lead.product }}</strong><br>{% endif %}
+                        {% if lead.country %}To {{ lead.country }} · {% endif %}
+                        {% if lead.quantity %}Qty {{ lead.quantity }} · {% endif %}
+                        {% if lead.shipping_method %}{{ lead.shipping_method }}{% endif %}
+                        {% if lead.message %}<br>{{ lead.message }}{% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5">No leads yet. Quote and contact forms land here.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

@@ -1,49 +1,60 @@
 {% extends "base.html" %}
 
-{% block title %}Shipping | The Jan Code{% endblock %}
+{% block title %}Shipping rates | The Jan Code{% endblock %}
+{% block description %}Sea freight from ${{ rates.sea_per_cbm }}/CBM ({{ rates.sea_days }}) or air from ${{ rates.air_per_kg }}/kg ({{ rates.air_days }}). Estimate cost with the calculator.{% endblock %}
 
 {% block content %}
 <section class="info-section">
     <div class="page-header">
-        <h1>Shipping Information</h1>
-        <p>Insured delivery worldwide. Choose sea or air shipping for goods you source with us.</p>
+        <h1>Shipping</h1>
+        <p>Sea and air for orders you place with us. Estimates below — final price depends on destination and cargo.</p>
     </div>
 
     <div class="info-container">
         <div class="info-box">
-            <h2><i class="fas fa-earth-americas text-muted"></i> Worldwide Shipping</h2>
-            <p>We ship to virtually every country in the world. We partner with trusted international carriers to ensure your package arrives safely and on time.</p>
+            <h2><i class="fas fa-earth-americas text-muted"></i> Worldwide</h2>
+            <p>We ship to most countries. Rates depend on size, weight, and destination.</p>
         </div>
-
         <div class="info-box">
-            <h2><i class="fas fa-box text-muted"></i> Packaging &amp; Shipping Options</h2>
+            <h2><i class="fas fa-box text-muted"></i> Published rates</h2>
             <ul>
-                <li>
-                    <strong>Sea Shipping</strong> — charged by volume (CBM)<br>
-                    <strong>$260 per CBM</strong> · 30–45 days · best for bulk orders and lower cost
-                </li>
-                <li>
-                    <strong>Air Shipping</strong> — charged by weight (kg)<br>
-                    <strong>$19 per kg</strong> · 7–14 days · faster delivery when you need it sooner
-                </li>
+                <li><strong>Sea</strong> — ${{ rates.sea_per_cbm }} per CBM, about {{ rates.sea_days }}. Better for bulk.</li>
+                <li><strong>Air</strong> — ${{ rates.air_per_kg }} per kg, about {{ rates.air_days }}. Faster, costs more.</li>
             </ul>
-            <p class="text-muted mt-2">Transit times are estimates from dispatch and can vary by destination and customs. Final quotes depend on total CBM (sea) or total kg (air).</p>
         </div>
-
         <div class="info-box">
-            <h2><i class="fas fa-location-dot text-muted"></i> Order Tracking</h2>
-            <p>All orders include a unique tracking number. You can track your package in real time from dispatch to delivery.</p>
+            <h2><i class="fas fa-location-dot text-muted"></i> Tracking</h2>
+            <p>Orders get a Jan Code tracking ID once they ship. <a href="{{ url_for('track') }}">Look it up here</a> or message WhatsApp.</p>
         </div>
-
         <div class="info-box">
-            <h2><i class="fas fa-boxes-stacked text-muted"></i> Package Forwarding</h2>
-            <p>We consolidate multiple purchases and ship them together to save you money on shipping costs.</p>
+            <h2><i class="fas fa-boxes-stacked text-muted"></i> Consolidation</h2>
+            <p>If you buy from multiple suppliers we can combine everything into one shipment to save on freight.</p>
         </div>
+    </div>
 
-        <div class="info-box">
-            <h2><i class="fas fa-shield-halved text-muted"></i> Shipping Protection</h2>
-            <p>All packages are insured and tracked. In case of loss or damage, we'll work with the carrier to resolve the issue.</p>
+    <div class="calc-wrap">
+        <h2>Freight estimate</h2>
+        <p class="calc-lead">Rough cost using our published rates. Not a final invoice.</p>
+        <div class="calc" data-sea="{{ rates.sea_per_cbm }}" data-air="{{ rates.air_per_kg }}" data-sea-days="{{ rates.sea_days }}" data-air-days="{{ rates.air_days }}">
+            <div class="calc-toggle" role="tablist">
+                <button type="button" class="calc-mode active" data-mode="sea">Sea / CBM</button>
+                <button type="button" class="calc-mode" data-mode="air">Air / kg</button>
+            </div>
+            <label for="calcInput" id="calcLabel">Cubic meters (CBM)</label>
+            <input id="calcInput" type="number" min="0" step="0.01" value="1" inputmode="decimal">
+            <div class="calc-result">
+                <div>
+                    <span class="calc-kicker">Estimated freight</span>
+                    <strong id="calcPrice">$0</strong>
+                </div>
+                <div>
+                    <span class="calc-kicker">Typical transit</span>
+                    <strong id="calcTime">{{ rates.sea_days }}</strong>
+                </div>
+            </div>
+            <p class="calc-disclaimer">Does not include product cost, our sourcing fee, insurance, or destination customs. Restricted goods (batteries, liquids, replicas) may be refused or priced differently.</p>
         </div>
+        <a href="{{ url_for('quote') }}" class="btn btn-primary mt-2">Turn this into a real quote</a>
     </div>
 </section>
 {% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Request received | The Jan Code{% endblock %}
+
+{% block content %}
+<section class="info-section">
+    <div class="coming-soon-page">
+        <div class="coming-soon-inner">
+            <span class="coming-soon-badge"><i class="fas fa-check"></i> Saved</span>
+            <h1>We have your {{ 'quote' if kind == 'quote' else 'message' }}</h1>
+            <p class="coming-soon-lead">
+                Next, open WhatsApp so we can reply with photos and questions if needed. The chat is pre-filled with what you just sent.
+            </p>
+            <div class="hero-actions">
+                <a href="{{ wa_url }}" class="btn btn-primary" id="waContinue">
+                    <i class="fab fa-whatsapp"></i> Continue on WhatsApp
+                </a>
+                <a href="{{ url_for('home') }}" class="btn btn-ghost">Back home</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    (function () {
+        var link = document.getElementById('waContinue');
+        if (link) {
+            setTimeout(function () { window.location.href = link.href; }, 900);
+        }
+    })();
+</script>
+{% endblock %}

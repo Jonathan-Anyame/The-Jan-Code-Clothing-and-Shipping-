@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}FAQ | The Jan Code{% endblock %}
+{% block description %}Answers on China sourcing, MOQ, payment, inspection, sea vs air freight, customs, consolidation, and tracking.{% endblock %}
+
+{% block content %}
+<section class="info-section">
+    <div class="page-header">
+        <h1>FAQ</h1>
+        <p>Straight answers for people who want to buy from China without guessing.</p>
+    </div>
+
+    <div class="faq-list faq-list-wide">
+        <details open>
+            <summary>How does sourcing work?</summary>
+            <p>You tell us the product, quantity, and destination. We find suppliers, send you quotes, and only buy after you confirm. Then we inspect and ship.</p>
+        </details>
+        <details>
+            <summary>What do you need from me to quote?</summary>
+            <p>A description (or photo/link), quantity, and the country it should arrive in. Budget and a deadline help. You can add photos on WhatsApp after the form.</p>
+        </details>
+        <details>
+            <summary>Is there a minimum order?</summary>
+            <p>It depends on the factory. Some products have a supplier MOQ. We will tell you the minimum before you pay. Small test orders are sometimes possible, but unit price is usually higher.</p>
+        </details>
+        <details>
+            <summary>How do I pay?</summary>
+            <p>We send a quote first. You pay to start the purchase. We do not buy from the supplier until you confirm. We will tell you the amount and method on WhatsApp or email — we do not take card payments on this site yet.</p>
+        </details>
+        <details>
+            <summary>Do you inspect the goods?</summary>
+            <p>Yes. We check before shipping. That will not catch every possible defect, but it stops obvious issues (wrong item, damaged cartons, missing quantity) from leaving China.</p>
+        </details>
+        <details>
+            <summary>Sea or air — which should I pick?</summary>
+            <p>Sea is cheaper for bulky cargo: ${{ rates.sea_per_cbm }} per CBM, about {{ rates.sea_days }}. Air is faster for lighter goods: ${{ rates.air_per_kg }} per kg, about {{ rates.air_days }}. If you are unsure, send the size/weight and we will recommend.</p>
+        </details>
+        <details>
+            <summary>Can you combine orders from different suppliers?</summary>
+            <p>Yes. Consolidation into one shipment usually saves freight compared with shipping each supplier separately.</p>
+        </details>
+        <details>
+            <summary>Do you ship worldwide?</summary>
+            <p>To most countries. Final cost depends on destination, cargo type, and whether sea or air is used. Some goods have extra rules (batteries, liquids, branded copies). Tell us what it is and we will say if we can move it.</p>
+        </details>
+        <details>
+            <summary>Who pays customs and import tax?</summary>
+            <p>You do, in the destination country. Our quote is product + our service + freight. Duties, VAT/GST, and local clearance are on the consignee unless we agree otherwise in writing.</p>
+        </details>
+        <details>
+            <summary>How do I track?</summary>
+            <p>When the shipment is moving you get a tracking code like TJC-1001. Enter it on the <a href="{{ url_for('track') }}">track page</a>. You can also message WhatsApp anytime. Try <strong>TJC-DEMO</strong> to see how it looks.</p>
+        </details>
+        <details>
+            <summary>Is the clothing shop open?</summary>
+            <p>Not yet. Streetwear is coming later. Right now we only do sourcing and shipping. <a href="{{ url_for('shop') }}">See the shop page</a>.</p>
+        </details>
+    </div>
+
+    <div class="hero-actions mt-2">
+        <a href="{{ url_for('quote') }}" class="btn btn-primary">Get a quote</a>
+        <a href="{{ whatsapp_link }}" class="btn btn-secondary" target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+</section>
+{% endblock %}

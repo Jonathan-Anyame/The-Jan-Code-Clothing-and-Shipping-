@@ -1,0 +1,13 @@
+{
+  "buildCommand": "pip install -r requirements.txt",
+  "framework": "flask",
+  "python": {
+    "version": "3.12"
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/api/server"
+    }
+  ]
+}

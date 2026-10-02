@@ -1,24 +1,24 @@
 {% extends "base.html" %}
 
-{% block title %}Clothing Coming Soon | The Jan Code{% endblock %}
+{% block title %}Clothing coming soon | The Jan Code{% endblock %}
+{% block description %}The Jan Code clothing shop is not open yet. Sourcing from China and worldwide shipping are available now.{% endblock %}
 
 {% block content %}
 <section class="shop-section">
     <div class="coming-soon-page">
         <div class="coming-soon-inner">
-            <span class="coming-soon-badge"><i class="fas fa-shirt"></i> Clothing Collection</span>
-            <h1>Coming Soon</h1>
+            <span class="coming-soon-badge"><i class="fas fa-shirt"></i> Clothing collection</span>
+            <h1>Coming soon</h1>
             <p class="coming-soon-lead">
-                Our shop for premium streetwear and custom clothing is not available yet.
-                We are preparing the collection carefully — thank you for your patience.
+                Our shop for streetwear and custom clothing is not available yet.
             </p>
             <p class="coming-soon-focus">
                 <strong>Right now we offer:</strong> sourcing goods from China and shipping them worldwide.
             </p>
             <div class="hero-actions">
-                <a href="/buy-from-china" class="btn btn-primary">Source Goods</a>
-                <a href="/shipping" class="btn btn-secondary">Shipping Info</a>
-                <a href="/contact" class="btn btn-ghost">Contact Us</a>
+                <a href="{{ url_for('quote') }}" class="btn btn-primary">Get a sourcing quote</a>
+                <a href="{{ url_for('shipping') }}" class="btn btn-secondary">Shipping info</a>
+                <a href="{{ url_for('contact') }}" class="btn btn-ghost">Contact</a>
             </div>
         </div>
     </div>

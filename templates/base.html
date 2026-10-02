@@ -3,47 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}The Jan Code | Your Own Code{% endblock %}</title>
-    <meta name="description" content="{% block meta_description %}The Jan Code — find products in China and ship them worldwide.{% endblock %}">
+    <title>{% block title %}The Jan Code{% endblock %}</title>
+    <meta name="description" content="{% block description %}The Jan Code sources products in China and ships them worldwide. Get a quote for product finding, buying, quality checks, sea or air freight.{% endblock %}">
+    <link rel="canonical" href="{% block canonical %}{{ request.base_url }}{% endblock %}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="The Jan Code">
+    <meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}">
+    <meta property="og:description" content="{{ self.description() }}">
+    <meta property="og:url" content="{{ request.base_url }}">
+    <meta property="og:image" content="{{ url_for('static', filename='image/hero.jpg', _external=True) }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ self.title() }}">
+    <meta name="twitter:description" content="{{ self.description() }}">
     <link rel="icon" href="{{ url_for('static', filename='image/logo.png') }}" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "name": "The Jan Code",
+      "url": "{{ request.url_root.rstrip('/') }}",
+      "email": "{{ contact_email }}",
+      "telephone": "+{{ whatsapp_number }}",
+      "image": "{{ url_for('static', filename='image/logo.png', _external=True) }}",
+      "description": "Product sourcing from China and worldwide shipping.",
+      "sameAs": ["{{ instagram_url }}", "{{ whatsapp_link }}"]
+    }
+    </script>
     {% block head %}{% endblock %}
 </head>
 <body>
-<header role="banner">
-    <nav class="navbar" role="navigation" aria-label="Main navigation" id="navbar">
-        <a href="/" class="logo">
+<header>
+    <nav class="navbar" id="navbar">
+        <a href="{{ url_for('home') }}" class="logo">
             <img src="{{ url_for('static', filename='image/logo.png') }}" alt="The Jan Code logo">
             <span class="logo-text">The Jan <span>Code</span></span>
         </a>
 
-        <div class="hamburger" id="hamburger" aria-label="Toggle menu" role="button" tabindex="0">
+        <div class="hamburger" id="hamburger" aria-label="Menu">
             <span></span>
             <span></span>
             <span></span>
         </div>
 
         <ul class="nav-menu" id="navMenu">
-            <li><a href="/" class="{% if request.path == '/' %}active{% endif %}">Home</a></li>
-            <li><a href="/buy-from-china" class="{% if request.path == '/buy-from-china' %}active{% endif %}">Sourcing</a></li>
-            <li><a href="/shipping" class="{% if request.path == '/shipping' %}active{% endif %}">Shipping</a></li>
-            <li><a href="/contact" class="{% if request.path == '/contact' %}active{% endif %}">Contact</a></li>
-            {% if current_user %}
-                <li><a href="/orders" class="{% if request.path.startswith('/order') %}active{% endif %}">Orders</a></li>
-                {% if current_user == 'admin' %}
-                    <li><a href="/admin">Admin</a></li>
-                {% endif %}
-                <li><a href="/logout">Logout</a></li>
-            {% else %}
-                <li><a href="/login">Login</a></li>
-                <li><a href="/register" class="nav-cta">Register</a></li>
-            {% endif %}
+            <li><a href="{{ url_for('home') }}" class="{% if request.path == '/' %}active{% endif %}">Home</a></li>
+            <li><a href="{{ url_for('buy_from_china') }}" class="{% if request.path == '/buy-from-china' %}active{% endif %}">Sourcing</a></li>
+            <li><a href="{{ url_for('shipping') }}" class="{% if request.path == '/shipping' %}active{% endif %}">Shipping</a></li>
+            <li><a href="{{ url_for('track') }}" class="{% if request.path == '/track' %}active{% endif %}">Track</a></li>
+            <li><a href="{{ url_for('faq') }}" class="{% if request.path == '/faq' %}active{% endif %}">FAQ</a></li>
+            <li><a href="{{ url_for('contact') }}" class="{% if request.path == '/contact' %}active{% endif %}">Contact</a></li>
+            <li><a href="{{ url_for('quote') }}" class="nav-cta">Get a quote</a></li>
         </ul>
     </nav>
 </header>
 
 <main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-wrap">
+                {% for category, message in messages %}
+                    <div class="flash flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
     {% block content %}{% endblock %}
 </main>
 
@@ -51,24 +76,27 @@
     <div class="footer-container">
         <div class="footer-brand">
             <h2>The Jan Code</h2>
-            <p>Your Own Code. We find products in China and ship them worldwide.</p>
+            <p>We find products in China, buy them for you, check quality, and ship worldwide.</p>
         </div>
         <div class="footer-links">
             <h3>Explore</h3>
-            <a href="/buy-from-china">Sourcing</a>
-            <a href="/shipping">Shipping</a>
-            <a href="/contact">Contact</a>
+            <a href="{{ url_for('quote') }}">Get a quote</a>
+            <a href="{{ url_for('buy_from_china') }}">Sourcing</a>
+            <a href="{{ url_for('shipping') }}">Shipping rates</a>
+            <a href="{{ url_for('track') }}">Track an order</a>
+            <a href="{{ url_for('faq') }}">FAQ</a>
+            <a href="{{ url_for('shop') }}">Clothing shop</a>
         </div>
         <div class="footer-contact">
             <h3>Connect</h3>
-            <a href="https://www.instagram.com/the.jan.code" target="_blank" rel="noopener">
+            <a href="{{ instagram_url }}" target="_blank" rel="noopener">
                 <i class="fab fa-instagram"></i> @the.jan.code
             </a>
-            <a href="https://wa.me/8613535824547" target="_blank" rel="noopener">
-                <i class="fab fa-whatsapp"></i> +86 135 3582 4547
+            <a href="{{ whatsapp_link }}" target="_blank" rel="noopener">
+                <i class="fab fa-whatsapp"></i> +{{ whatsapp_number }}
             </a>
-            <a href="mailto:nyamejonathan9@gmail.com">
-                <i class="fas fa-envelope"></i> nyamejonathan9@gmail.com
+            <a href="mailto:{{ contact_email }}">
+                <i class="fas fa-envelope"></i> {{ contact_email }}
             </a>
         </div>
     </div>
@@ -76,7 +104,10 @@
     <p class="copyright">© 2026 The Jan Code. All Rights Reserved.</p>
 </footer>
 
-<div class="toast-container" id="toastContainer"></div>
+<a class="wa-float" href="{{ whatsapp_link }}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+</a>
+
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 {% block scripts %}{% endblock %}
 </body>

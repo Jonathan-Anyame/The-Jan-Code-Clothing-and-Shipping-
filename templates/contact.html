@@ -1,44 +1,50 @@
 {% extends "base.html" %}
 
-{% block title %}Contact Us | The Jan Code{% endblock %}
+{% block title %}Contact | The Jan Code{% endblock %}
+{% block description %}Message The Jan Code on WhatsApp, email, or Instagram. Ask about sourcing from China or shipping.{% endblock %}
 
 {% block content %}
 <section class="contact-section">
     <div class="page-header">
-        <h1>Contact Us</h1>
-        <p>Need help finding products or shipping goods? Reach out — we are here to help.</p>
+        <h1>Contact</h1>
+        <p>Questions about sourcing or shipping? WhatsApp is fastest. The form also opens a pre-filled chat.</p>
     </div>
 
     <div class="contact-container">
         <div class="contact-info">
-            <h2>Get in Touch</h2>
+            <h2>Get in touch</h2>
             <p>
-                <a href="https://wa.me/8613535824547" target="_blank" rel="noopener">
+                <a href="{{ whatsapp_link }}" target="_blank" rel="noopener">
                     <i class="fab fa-whatsapp"></i>
-                    WhatsApp: +86 135 3582 4547
+                    WhatsApp: +{{ whatsapp_number }}
                 </a>
             </p>
             <p>
-                <a href="mailto:nyamejonathan9@gmail.com">
+                <a href="mailto:{{ contact_email }}">
                     <i class="fas fa-envelope"></i>
-                    Email: nyamejonathan9@gmail.com
+                    Email: {{ contact_email }}
                 </a>
             </p>
             <p>
-                <a href="https://www.instagram.com/the.jan.code" target="_blank" rel="noopener">
+                <a href="{{ instagram_url }}" target="_blank" rel="noopener">
                     <i class="fab fa-instagram"></i>
                     Instagram: @the.jan.code
                 </a>
             </p>
+            <p class="contact-hint">For a product order, use <a href="{{ url_for('quote') }}">the quote form</a> so we get quantity and destination in one place.</p>
         </div>
 
         <div class="contact-form">
-            <h2>Send us a Message</h2>
-            <form onsubmit="event.preventDefault(); showToast('Message sent! We will get back to you soon.', 'success'); this.reset();">
-                <input type="text" placeholder="Your Name" required>
-                <input type="email" placeholder="Your Email" required>
-                <textarea placeholder="Your Message" rows="5" required></textarea>
-                <button type="submit" class="btn btn-primary">Send Message</button>
+            <h2>Send a message</h2>
+            <form method="post" action="{{ url_for('contact') }}">
+                <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+                <label for="name">Name</label>
+                <input id="name" name="name" type="text" required placeholder="Your name">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" required placeholder="you@email.com">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" rows="5" required placeholder="How can we help?"></textarea>
+                <button type="submit" class="btn btn-primary">Send message</button>
             </form>
         </div>
     </div>

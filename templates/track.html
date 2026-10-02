@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Track an order | The Jan Code{% endblock %}
+{% block description %}Look up your The Jan Code shipment with your TJC tracking ID.{% endblock %}
+
+{% block content %}
+<section class="info-section track-section">
+    <div class="page-header">
+        <h1>Track an order</h1>
+        <p>Enter the code we sent you (looks like TJC-1001). Try <strong>TJC-DEMO</strong> to see a sample.</p>
+    </div>
+
+    <form class="track-form" method="post" action="{{ url_for('track') }}">
+        <label for="tracking_id" class="sr-only">Tracking ID</label>
+        <input id="tracking_id" name="tracking_id" type="text" required
+               value="{{ query }}" placeholder="TJC-DEMO" autocomplete="off">
+        <button type="submit" class="btn btn-primary">Look up</button>
+    </form>
+
+    {% if searched and shipment %}
+    <div class="track-card">
+        <div class="track-card-top">
+            <h2>{{ shipment.tracking_id }}</h2>
+            <span class="status">{{ shipment.status }}</span>
+        </div>
+        <p><strong>Destination:</strong> {{ shipment.destination or '—' }}</p>
+        <p><strong>Method:</strong> {{ shipment.method or '—' }}</p>
+        {% if shipment.customer_name %}
+        <p><strong>For:</strong> {{ shipment.customer_name }}</p>
+        {% endif %}
+        {% if shipment.note %}
+        <p class="track-note">{{ shipment.note }}</p>
+        {% endif %}
+        <p class="text-muted">Updated {{ shipment.updated_at }}</p>
+
+        <ol class="track-steps">
+            {% for s in statuses %}
+            <li class="{% if s == shipment.status %}current{% endif %}
+                       {% if loop.index <= statuses.index(shipment.status) + 1 %}done{% endif %}">
+                {{ s }}
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+    {% elif searched %}
+    <div class="track-card track-empty">
+        <h2>No shipment with that code</h2>
+        <p>Check the ID, or message us — we can look it up from our side.</p>
+        <a class="btn btn-secondary btn-sm mt-2" href="{{ whatsapp_link }}" target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

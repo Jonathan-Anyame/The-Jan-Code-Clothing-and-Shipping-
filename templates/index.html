@@ -1,61 +1,139 @@
 {% extends "base.html" %}
 
-{% block title %}The Jan Code | Find & Ship Products Worldwide{% endblock %}
+{% block title %}The Jan Code — Source from China, ship worldwide{% endblock %}
 
 {% block content %}
 <section class="hero">
-    <img src="{{ url_for('static', filename='image/hero.jpg') }}" alt="Global sourcing and shipping" class="hero-image">
+    <img src="{{ url_for('static', filename='image/hero.jpg') }}" alt="" class="hero-image">
     <div class="overlay">
-        <span class="hero-badge">Sourcing &amp; Shipping</span>
+        <p class="hero-badge">Sourcing + shipping</p>
         <h1>The Jan Code</h1>
-        <h2>Your Own Code</h2>
-        <p>We find products from trusted suppliers in China and ship them worldwide — tell us what you need, we handle the rest.</p>
+        <h2>Tell us what you need. We find it in China and send it to you.</h2>
+        <p>Quotes from suppliers, quality checks, sea or air freight, and a tracking number when it ships.</p>
         <div class="hero-actions">
-            <a href="/buy-from-china" class="btn btn-primary">Find Products</a>
-            <a href="/shipping" class="btn btn-secondary">Shipping Info</a>
+            <a href="{{ url_for('quote') }}" class="btn btn-primary">Get a quote</a>
+            <a href="{{ url_for('shipping') }}" class="btn btn-secondary">Shipping rates</a>
         </div>
     </div>
 </section>
 
 <section class="services">
-    <h2>What We Offer</h2>
+    <h2>What we do</h2>
     <div class="service-container">
         <div class="card">
             <div class="service-icon"><i class="fas fa-magnifying-glass"></i></div>
-            <h3>Product Finding</h3>
-            <p>Tell us what you need — we locate the right suppliers and get competitive quotes for you.</p>
-            <a href="/buy-from-china" class="btn btn-ghost btn-sm mt-2">Learn more</a>
+            <h3>Product finding</h3>
+            <p>Send us what you want. We search suppliers in China and come back with options and prices.</p>
         </div>
         <div class="card">
-            <div class="service-icon"><i class="fas fa-globe-asia"></i></div>
-            <h3>Buy From China</h3>
-            <p>We purchase products from trusted Chinese suppliers on your behalf and manage quality checks.</p>
-            <a href="/buy-from-china" class="btn btn-ghost btn-sm mt-2">How it works</a>
+            <div class="service-icon"><i class="fas fa-store"></i></div>
+            <h3>We buy for you</h3>
+            <p>You confirm the quote. We purchase from the supplier and handle the factory side.</p>
+        </div>
+        <div class="card">
+            <div class="service-icon"><i class="fas fa-clipboard-check"></i></div>
+            <h3>Quality check</h3>
+            <p>Goods are checked before they leave. Problems get caught in China, not at your door.</p>
         </div>
         <div class="card">
             <div class="service-icon"><i class="fas fa-truck-fast"></i></div>
-            <h3>Worldwide Shipping</h3>
-            <p>Sea from $260/CBM (30–45 days) or air from $19/kg (7–14 days) — with tracking and care.</p>
-            <a href="/shipping" class="btn btn-ghost btn-sm mt-2">Shipping info</a>
+            <h3>Sea or air</h3>
+            <p>Sea from ${{ rates.sea_per_cbm }}/CBM ({{ rates.sea_days }}) or air from ${{ rates.air_per_kg }}/kg ({{ rates.air_days }}).</p>
         </div>
+    </div>
+</section>
+
+<section class="steps-section">
+    <div class="section-header">
+        <h2>How it works</h2>
+        <p>Four steps. WhatsApp the whole way if you want.</p>
+    </div>
+    <ol class="steps">
+        <li>
+            <span class="step-num">1</span>
+            <h3>Tell us what you want</h3>
+            <p>Product, quantity, and where it should land. Photos or links help.</p>
+        </li>
+        <li>
+            <span class="step-num">2</span>
+            <h3>We send quotes</h3>
+            <p>Supplier options, unit price, and an estimated freight cost.</p>
+        </li>
+        <li>
+            <span class="step-num">3</span>
+            <h3>You confirm and pay</h3>
+            <p>No purchase until you approve. Then we buy and inspect.</p>
+        </li>
+        <li>
+            <span class="step-num">4</span>
+            <h3>We ship and you track</h3>
+            <p>You get a tracking code (TJC-xxxx) once the shipment is moving.</p>
+        </li>
+    </ol>
+    <div class="hero-actions">
+        <a href="{{ url_for('quote') }}" class="btn btn-primary">Start a quote</a>
+        <a href="{{ url_for('buy_from_china') }}" class="btn btn-ghost">Full sourcing details</a>
+    </div>
+</section>
+
+<section class="trust-section">
+    <div class="section-header">
+        <h2>Built for real orders</h2>
+        <p>Retailers, resellers, and anyone buying in bulk — not a clothing catalog (yet).</p>
+    </div>
+    <div class="service-container">
         <div class="card">
             <div class="service-icon"><i class="fas fa-boxes-stacked"></i></div>
-            <h3>Package Forwarding</h3>
-            <p>Ship multiple purchases together and save on shipping costs.</p>
-            <a href="/shipping" class="btn btn-ghost btn-sm mt-2">How it works</a>
+            <h3>Consolidation</h3>
+            <p>Buying from more than one supplier? We can combine into one shipment so you are not paying freight twice.</p>
+        </div>
+        <div class="card">
+            <div class="service-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+            <h3>Clear payment</h3>
+            <p>Quote first. You pay to start the order. We do not buy until you confirm. Destination customs and duties are yours.</p>
         </div>
         <div class="card">
             <div class="service-icon"><i class="fas fa-location-dot"></i></div>
-            <h3>Order Tracking</h3>
-            <p>Track your package from dispatch to delivery.</p>
-            <a href="/contact" class="btn btn-ghost btn-sm mt-2">Get help</a>
+            <h3>Tracking</h3>
+            <p>Every live order gets a Jan Code ID. Look it up on the site or message us on WhatsApp.</p>
         </div>
         <div class="card">
-            <div class="service-icon"><i class="fas fa-handshake"></i></div>
-            <h3>Trusted Suppliers</h3>
-            <p>We work with verified suppliers and check quality before your goods leave China.</p>
-            <a href="/contact" class="btn btn-ghost btn-sm mt-2">Contact us</a>
+            <div class="service-icon"><i class="fas fa-globe"></i></div>
+            <h3>Worldwide</h3>
+            <p>We ship to most countries. Final freight depends on size, weight, and destination.</p>
         </div>
     </div>
+</section>
+
+<section class="cta-band">
+    <div class="cta-inner">
+        <h2>Ready to source something?</h2>
+        <p>Send a quote request or message WhatsApp. We reply with next steps, not a sales script.</p>
+        <div class="hero-actions">
+            <a href="{{ url_for('quote') }}" class="btn btn-primary">Get a quote</a>
+            <a href="{{ whatsapp_link }}" class="btn btn-secondary" target="_blank" rel="noopener">WhatsApp us</a>
+        </div>
+    </div>
+</section>
+
+<section class="faq-preview">
+    <div class="section-header">
+        <h2>Common questions</h2>
+    </div>
+    <div class="faq-list">
+        <details open>
+            <summary>How do I start?</summary>
+            <p>Use the quote form or WhatsApp. Tell us the product, quantity, and destination. We come back with supplier options and an estimate.</p>
+        </details>
+        <details>
+            <summary>Do you inspect the goods?</summary>
+            <p>Yes. We check before shipping so obvious problems are caught in China.</p>
+        </details>
+        <details>
+            <summary>Who pays customs?</summary>
+            <p>You do, in the destination country. Freight is our quote. Duties and taxes are local.</p>
+        </details>
+    </div>
+    <p class="faq-more"><a href="{{ url_for('faq') }}">See all FAQs</a></p>
 </section>
 {% endblock %}

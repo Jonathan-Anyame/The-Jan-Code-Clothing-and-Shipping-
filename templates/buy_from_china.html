@@ -1,63 +1,64 @@
 {% extends "base.html" %}
 
-{% block title %}Find &amp; Source Products | The Jan Code{% endblock %}
+{% block title %}Find &amp; source products | The Jan Code{% endblock %}
+{% block description %}We find products in China, buy them for you, inspect, and ship. See how sourcing works and what you pay.{% endblock %}
 
 {% block content %}
 <section class="info-section">
     <div class="page-header">
-        <h1>Find &amp; Source Products</h1>
-        <p>We find products from trusted suppliers in China and handle purchasing, quality checks, and delivery for you.</p>
+        <h1>Find &amp;  source  all your products in China</h1>
+        <p>We find stuff in China, buy it for you, check it, and ship it out.</p>
     </div>
 
     <div class="info-container">
         <div class="info-box">
-            <h2><i class="fas fa-magnifying-glass text-muted"></i> Product Finding</h2>
-            <p>Tell us what you need. We locate the right products and suppliers in China so you do not have to hunt across markets yourself.</p>
+            <h2><i class="fas fa-magnifying-glass text-muted"></i> Product finding</h2>
+            <p>Tell us what you need. We search suppliers and send you quotes with unit price and an estimated freight cost.</p>
         </div>
-
         <div class="info-box">
-            <h2><i class="fas fa-store text-muted"></i> Direct Sourcing</h2>
-            <p>We source authentic products directly from trusted suppliers and deliver them to your doorstep.</p>
+            <h2><i class="fas fa-store text-muted"></i> Direct sourcing</h2>
+            <p>We buy from the supplier after you confirm. You are not dealing with the factory yourself unless you want to.</p>
         </div>
-
         <div class="info-box">
-            <h2><i class="fas fa-handshake text-muted"></i> Trusted Suppliers</h2>
-            <p>We work with verified suppliers. All products are checked for quality before shipment.</p>
+            <h2><i class="fas fa-clipboard-check text-muted"></i> Quality check</h2>
+            <p>We look at the goods before they leave China — quantity, obvious damage, and whether it matches what you ordered.</p>
         </div>
-
         <div class="info-box">
-            <h2><i class="fas fa-tags text-muted"></i> Competitive Pricing</h2>
-            <p>Get wholesale prices for bulk orders. Our direct relationships with manufacturers mean lower costs for you.</p>
-        </div>
-
-        <div class="info-box">
-            <h2><i class="fas fa-truck-fast text-muted"></i> Shipping Options</h2>
+            <h2><i class="fas fa-truck-fast text-muted"></i> Shipping</h2>
             <p>
-                <strong>Sea shipping:</strong> $260 / CBM · 30–45 days<br>
-                <strong>Air shipping:</strong> $19 / kg · 7–14 days
+                <strong>Sea:</strong> ${{ rates.sea_per_cbm }} / CBM · {{ rates.sea_days }}<br>
+                <strong>Air:</strong> ${{ rates.air_per_kg }} / kg · {{ rates.air_days }}
             </p>
-            <p>Sea is priced by volume (CBM); air is priced by weight (kg). Choose what fits your budget and timeline.</p>
-            <a href="/shipping" class="btn btn-ghost btn-sm mt-2">Shipping details</a>
+            <a href="{{ url_for('shipping') }}" class="btn btn-ghost btn-sm mt-2">Calculator &amp; rates</a>
         </div>
-
         <div class="info-box">
-            <h2><i class="fas fa-list-ol text-muted"></i> How to Order</h2>
+            <h2><i class="fas fa-list-ol text-muted"></i> How to order</h2>
             <ol>
-                <li>Contact us with product specifications</li>
-                <li>We find suppliers and get quotes</li>
-                <li>Confirm order and payment</li>
-                <li>We handle all logistics</li>
-                <li>Receive your products</li>
+                <li>Send a quote (form or WhatsApp) with product, qty, country</li>
+                <li>We get supplier options</li>
+                <li>You confirm and pay</li>
+                <li>We buy, inspect, ship — you get a tracking ID</li>
             </ol>
         </div>
-
         <div class="info-box">
-            <h2><i class="fas fa-phone text-muted"></i> Contact Us</h2>
-            <p>
-                WhatsApp: <a href="https://wa.me/8613535824547">+86 135 3582 4547</a><br>
-                Email: <a href="mailto:nyamejonathan9@gmail.com">nyamejonathan9@gmail.com</a>
-            </p>
-            <a href="/contact" class="btn btn-primary btn-sm mt-2">Get Started</a>
+            <h2><i class="fas fa-file-invoice-dollar text-muted"></i> Payment &amp; terms</h2>
+            <ul>
+                <li>Quote is free.</li>
+                <li>We only purchase after you confirm.</li>
+                <li>Destination customs, duties, and taxes are paid by you.</li>
+                <li>Restricted goods may be refused.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="cta-band cta-inline">
+        <div class="cta-inner">
+            <h2>Have a product in mind?</h2>
+            <p>The quote form takes a minute. WhatsApp if you already have photos.</p>
+            <div class="hero-actions">
+                <a href="{{ url_for('quote') }}" class="btn btn-primary">Get a quote</a>
+                <a href="{{ whatsapp_link }}" class="btn btn-secondary" target="_blank" rel="noopener">WhatsApp</a>
+            </div>
         </div>
     </div>
 </section>

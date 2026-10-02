@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Get a quote | The Jan Code{% endblock %}
+{% block description %}Request a China sourcing quote. Tell us the product, quantity, and destination — we find suppliers and estimate shipping.{% endblock %}
+
+{% block content %}
+<section class="info-section quote-section">
+    <div class="page-header">
+        <h1>Get a quote</h1>
+        <p>Describe what you need. We save the request, then open WhatsApp with the details filled in so we can reply fast.</p>
+    </div>
+
+    <div class="quote-grid">
+        <div class="contact-form">
+            <h2>Sourcing request</h2>
+            <form method="post" action="{{ url_for('quote') }}">
+                <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+                <label for="name">Name</label>
+                <input id="name" name="name" type="text" required value="{{ form.get('name', '') }}" placeholder="Your name">
+
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" required value="{{ form.get('email', '') }}" placeholder="you@email.com">
+
+                <label for="phone">Phone / WhatsApp</label>
+                <input id="phone" name="phone" type="tel" value="{{ form.get('phone', '') }}" placeholder="+233 …">
+
+                <label for="country">Ship to</label>
+                <select id="country" name="country" required>
+                    <option value="">Select a country</option>
+                    {% for c in countries %}
+                    <option value="{{ c }}" {% if form.get('country') == c %}selected{% endif %}>{{ c }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="product">What do you want?</label>
+                <textarea id="product" name="product" rows="4" required placeholder="Product name, specs, links, or photos you can send on WhatsApp after this.">{{ form.get('product', '') }}</textarea>
+
+                <div class="form-row">
+                    <div>
+                        <label for="quantity">Quantity</label>
+                        <input id="quantity" name="quantity" type="text" value="{{ form.get('quantity', '') }}" placeholder="e.g. 200 pcs or 2 CBM">
+                    </div>
+                    <div>
+                        <label for="budget">Budget (optional)</label>
+                        <input id="budget" name="budget" type="text" value="{{ form.get('budget', '') }}" placeholder="e.g. $800">
+                    </div>
+                </div>
+
+                <label for="shipping_method">Shipping</label>
+                <select id="shipping_method" name="shipping_method">
+                    <option value="Not sure">Not sure yet</option>
+                    <option value="Sea">Sea — ${{ rates.sea_per_cbm }}/CBM, {{ rates.sea_days }}</option>
+                    <option value="Air">Air — ${{ rates.air_per_kg }}/kg, {{ rates.air_days }}</option>
+                </select>
+
+                <label for="message">Anything else</label>
+                <textarea id="message" name="message" rows="3" placeholder="MOQ, colors, deadline, packaging…">{{ form.get('message', '') }}</textarea>
+
+                <button type="submit" class="btn btn-primary">Send quote request</button>
+                <p class="form-note">We also open WhatsApp with this info so you can add photos.</p>
+            </form>
+        </div>
+
+        <aside class="quote-aside">
+            <div class="info-box">
+                <h2>What happens next</h2>
+                <ol>
+                    <li>We read your brief.</li>
+                    <li>We search suppliers and send options.</li>
+                    <li>You pick one and confirm payment.</li>
+                    <li>We buy, inspect, and ship.</li>
+                </ol>
+            </div>
+            <div class="info-box">
+                <h2>Faster on WhatsApp?</h2>
+                <p>Skip the form if you already have photos or links.</p>
+                <a class="btn btn-secondary btn-sm mt-2" href="{{ whatsapp_link }}" target="_blank" rel="noopener">
+                    <i class="fab fa-whatsapp"></i> Message us
+                </a>
+            </div>
+            <div class="info-box">
+                <h2>Freight snapshot</h2>
+                <p>
+                    <strong>Sea:</strong> ${{ rates.sea_per_cbm }} / CBM · {{ rates.sea_days }}<br>
+                    <strong>Air:</strong> ${{ rates.air_per_kg }} / kg · {{ rates.air_days }}
+                </p>
+                <a href="{{ url_for('shipping') }}">Estimate with the calculator</a>
+            </div>
+        </aside>
+    </div>
+</section>
+{% endblock %}
