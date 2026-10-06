@@ -27,6 +27,7 @@ CONTACT_EMAIL = os.environ.get("CONTACT_EMAIL", "nyamejonathan9@gmail.com")
 INSTAGRAM_URL = os.environ.get(
     "INSTAGRAM_URL", "https://www.instagram.com/the.jan.code"
 )
+SNAPCHAT_URL = os.environ.get("SNAPCHAT_URL", "https://snapchat.com/t/6R8zg2eU")
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "")
 
 RATES = {
@@ -65,6 +66,7 @@ def inject_globals():
         "whatsapp_link": whatsapp_link(),
         "contact_email": CONTACT_EMAIL,
         "instagram_url": INSTAGRAM_URL,
+        "snapchat_url": SNAPCHAT_URL,
         "rates": RATES,
         "is_admin": session.get("admin") is True,
     }

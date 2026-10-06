@@ -1,0 +1,12 @@
+blinker==1.9.0
+click==8.4.2
+Flask==2.3.3
+gunicorn==21.2.0
+itsdangerous==2.2.0
+Jinja2==3.1.6
+MarkupSafe==3.0.3
+numpy==2.5.1
+packaging==26.3
+python-dotenv==1.0.0
+SQLAlchemy==1.4.46
+Werkzeug==3.1.8
