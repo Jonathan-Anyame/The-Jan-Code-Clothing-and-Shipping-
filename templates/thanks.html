@@ -8,6 +8,13 @@
         <div class="coming-soon-inner">
             <span class="coming-soon-badge"><i class="fas fa-check"></i> Saved</span>
             <h1>We have your {{ 'quote' if kind == 'quote' else 'message' }}</h1>
+            {% if order_code %}
+            <div style="background: #f0f0f0; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
+                <p style="margin: 0 0 10px 0; color: #666; font-size: 14px;">Your order code</p>
+                <p style="margin: 0; font-size: 24px; font-weight: bold; font-family: monospace; color: #000;">{{ order_code }}</p>
+                <p style="margin: 10px 0 0 0; color: #999; font-size: 12px;">Save this for your records</p>
+            </div>
+            {% endif %}
             <p class="coming-soon-lead">
                 Next, open WhatsApp so we can reply with photos and questions if needed. The chat is pre-filled with what you just sent.
             </p>

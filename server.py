@@ -164,7 +164,7 @@ def quote():
         if not name or not email or not product:
             flash("Please fill in your name, email, and what you want to source.", "error")
             return render_template("quote.html", countries=COUNTRIES, form=request.form)
-        db.save_lead(
+        order_code = db.save_lead(
             kind="quote",
             name=name,
             email=email,
@@ -178,6 +178,7 @@ def quote():
         )
         body = (
             f"New sourcing quote\n\n"
+            f"Order code: {order_code}\n"
             f"Name: {name}\n"
             f"Email: {email}\n"
             f"Phone: {phone or '—'}\n"
@@ -192,6 +193,7 @@ def quote():
         send_whatsapp(body)
         wa = (
             f"Hi, I want a sourcing quote from The Jan Code.\n\n"
+            f"Order code: {order_code}\n"
             f"Name: {name}\n"
             f"Email: {email}\n"
             f"Phone: {phone or '—'}\n"
@@ -202,7 +204,7 @@ def quote():
             f"Budget: {budget or '—'}\n"
             f"{message}"
         )
-        return redirect(url_for("thanks", kind="quote", wa=wa))
+        return redirect(url_for("thanks", kind="quote", wa=wa, order_code=order_code))
     return render_template("quote.html", countries=COUNTRIES, form={})
 
 
@@ -249,12 +251,12 @@ def contact():
         if not name or not email or not message:
             flash("Please fill in your name, email, and message.", "error")
             return render_template("contact.html")
-        db.save_lead(kind="contact", name=name, email=email, message=message)
-        body = f"Contact message from {name} <{email}>\n\n{message}\n"
+        order_code = db.save_lead(kind="contact", name=name, email=email, message=message)
+        body = f"Contact message from {name} <{email}>\n\nOrder code: {order_code}\n\n{message}\n"
         send_email(f"Contact from {name}", body, reply_to=email)
         send_whatsapp(body)
-        wa = f"Hi, this is {name} ({email}).\n\n{message}"
-        return redirect(url_for("thanks", kind="contact", wa=wa))
+        wa = f"Hi, this is {name} ({email}).\n\nOrder code: {order_code}\n\n{message}"
+        return redirect(url_for("thanks", kind="contact", wa=wa, order_code=order_code))
     return render_template("contact.html")
 
 
@@ -262,10 +264,12 @@ def contact():
 def thanks():
     kind = request.args.get("kind", "quote")
     wa_text = request.args.get("wa", "")
+    order_code = request.args.get("order_code", "")
     return render_template(
         "thanks.html",
         kind=kind,
         wa_url=whatsapp_link(wa_text) if wa_text else whatsapp_link(),
+        order_code=order_code,
     )
 
 

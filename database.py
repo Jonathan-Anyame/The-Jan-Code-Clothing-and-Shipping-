@@ -1,5 +1,6 @@
 import os
 import sqlite3
+import uuid
 from contextlib import contextmanager
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -39,6 +40,7 @@ def init_db():
             """
             CREATE TABLE IF NOT EXISTS leads (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                order_code TEXT NOT NULL UNIQUE,
                 kind TEXT NOT NULL,
                 name TEXT NOT NULL,
                 email TEXT NOT NULL,
@@ -89,21 +91,28 @@ def init_db():
             )
 
 
+def generate_order_code():
+    """Generate a unique order code in format: TJC-XXXXXXXX"""
+    return f"TJC-{uuid.uuid4().hex[:8].upper()}"
+
+
 def save_lead(kind, name, email, phone="", country="", product="", quantity="",
               shipping_method="", budget="", message=""):
+    order_code = generate_order_code()
     with get_db() as conn:
         conn.execute(
             """
             INSERT INTO leads (
-                kind, name, email, phone, country, product, quantity,
+                order_code, kind, name, email, phone, country, product, quantity,
                 shipping_method, budget, message, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
             """,
             (
-                kind, name, email, phone, country, product, quantity,
+                order_code, kind, name, email, phone, country, product, quantity,
                 shipping_method, budget, message,
             ),
         )
+    return order_code
 
 
 def list_leads(limit=200):
