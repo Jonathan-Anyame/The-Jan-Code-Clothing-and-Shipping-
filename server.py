@@ -14,6 +14,7 @@ from flask import (
     session,
     url_for,
 )
+from twilio.rest import Client
 
 import database as db
 
@@ -29,6 +30,10 @@ INSTAGRAM_URL = os.environ.get(
 )
 SNAPCHAT_URL = os.environ.get("SNAPCHAT_URL", "https://snapchat.com/t/6R8zg2eU")
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "")
+
+TWILIO_ACCOUNT_SID = os.environ.get("TWILIO_ACCOUNT_SID", "")
+TWILIO_AUTH_TOKEN = os.environ.get("TWILIO_AUTH_TOKEN", "")
+TWILIO_WHATSAPP_NUMBER = os.environ.get("TWILIO_WHATSAPP_NUMBER", "")
 
 RATES = {
     "sea_per_cbm": 260,
@@ -106,6 +111,21 @@ def send_email(subject, body, reply_to=None):
         return False
 
 
+def send_whatsapp(body):
+    if not TWILIO_ACCOUNT_SID or not TWILIO_AUTH_TOKEN or not TWILIO_WHATSAPP_NUMBER:
+        return False
+    try:
+        client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+        message = client.messages.create(
+            from_=f"whatsapp:{TWILIO_WHATSAPP_NUMBER}",
+            body=body,
+            to=f"whatsapp:+{WHATSAPP_NUMBER}",
+        )
+        return True
+    except Exception:
+        return False
+
+
 def require_admin():
     if session.get("admin"):
         return None
@@ -169,6 +189,7 @@ def quote():
             f"Notes: {message or '—'}\n"
         )
         send_email(f"Quote from {name}", body, reply_to=email)
+        send_whatsapp(body)
         wa = (
             f"Hi, I want a sourcing quote from The Jan Code.\n\n"
             f"Name: {name}\n"
@@ -231,6 +252,7 @@ def contact():
         db.save_lead(kind="contact", name=name, email=email, message=message)
         body = f"Contact message from {name} <{email}>\n\n{message}\n"
         send_email(f"Contact from {name}", body, reply_to=email)
+        send_whatsapp(body)
         wa = f"Hi, this is {name} ({email}).\n\n{message}"
         return redirect(url_for("thanks", kind="contact", wa=wa))
     return render_template("contact.html")
