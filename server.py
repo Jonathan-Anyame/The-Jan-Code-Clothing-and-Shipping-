@@ -36,10 +36,29 @@ TWILIO_AUTH_TOKEN = os.environ.get("TWILIO_AUTH_TOKEN", "")
 TWILIO_WHATSAPP_NUMBER = os.environ.get("TWILIO_WHATSAPP_NUMBER", "")
 
 RATES = {
-    "sea_per_cbm": 260,
+    "sea_per_cbm": 265,  # default shown across site (Accra)
     "air_per_kg": 19,
     "sea_days": "30–45 days",
     "air_days": "7–14 days",
+
+    # City-specific and category rates (from new rate poster)
+    "sea_per_cbm_accra": 265,
+    "sea_per_cbm_kumasi": 280,
+
+    # Less-than-1CBM rates
+    "sea_lt1cbm_accra": 270,
+    "sea_lt1cbm_kumasi": 290,
+
+    # Special categories
+    "sea_per_cbm_medical": 300,
+    "sea_per_cbm_special": 350,
+    "sea_per_cbm_branded": 300,
+
+    # Vehicle shipping (sea freight)
+    "vehicle_tricycle_per_cbm": 450,
+    "vehicle_motorbike_per_cbm": 400,
+
+    "notes": "Tiles charged per tonnage",
 }
 
 COUNTRIES = [

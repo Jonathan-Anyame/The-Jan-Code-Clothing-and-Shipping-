@@ -18,8 +18,15 @@
         <div class="info-box">
             <h2><i class="fas fa-box text-muted"></i> Published rates</h2>
             <ul>
-                <li><strong>Sea</strong> — ${{ rates.sea_per_cbm }} per CBM, about {{ rates.sea_days }}. Better for bulk.</li>
-                <li><strong>Air</strong> — ${{ rates.air_per_kg }} per kg, about {{ rates.air_days }}. Faster, costs more.</li>
+                <li><strong>Sea (Accra)</strong> — ${{ rates.sea_per_cbm_accra }} per CBM · approx {{ rates.sea_days }}</li>
+                <li><strong>Sea (Kumasi)</strong> — ${{ rates.sea_per_cbm_kumasi }} per CBM</li>
+                <li><strong>Less than 1 CBM</strong> — Accra ${{ rates.sea_lt1cbm_accra }}, Kumasi ${{ rates.sea_lt1cbm_kumasi }}</li>
+                <li><strong>Medical / cosmetics / liquid / food</strong> — ${{ rates.sea_per_cbm_medical }} per CBM</li>
+                <li><strong>Special goods</strong> — ${{ rates.sea_per_cbm_special }} per CBM (engines, fragile items, batteries)</li>
+                <li><strong>Branded goods (designers)</strong> — ${{ rates.sea_per_cbm_branded }} per CBM</li>
+                <li><strong>Vehicle shipping (sea freight)</strong> — Tricycle ${{ rates.vehicle_tricycle_per_cbm }} / CBM · Motorbike ${{ rates.vehicle_motorbike_per_cbm }} / CBM</li>
+                <li>{{ rates.notes }}</li>
+                <li style="margin-top:.6rem;"><img src="{{ url_for('static', filename='image/rates_poster.png') }}" alt="Rate poster" style="max-width:100%;height:auto;border-radius:6px;"></li>
             </ul>
         </div>
         <div class="info-box">
