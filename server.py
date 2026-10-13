@@ -23,7 +23,7 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-only-change-me")
 
-WHATSAPP_NUMBER = os.environ.get("WHATSAPP_NUMBER", "8613535824547")
+WHATSAPP_NUMBER = os.environ.get("WHATSAPP_NUMBER", "+8613535824547")
 CONTACT_EMAIL = os.environ.get("CONTACT_EMAIL", "nyamejonathan9@gmail.com")
 INSTAGRAM_URL = os.environ.get(
     "INSTAGRAM_URL", "https://www.instagram.com/the.jan.code"
@@ -131,17 +131,22 @@ def send_email(subject, body, reply_to=None):
 
 
 def send_whatsapp(body):
+    # Send WhatsApp message via Twilio. The recipient defaults to +8613535824547.
     if not TWILIO_ACCOUNT_SID or not TWILIO_AUTH_TOKEN or not TWILIO_WHATSAPP_NUMBER:
+        app.logger.warning("Twilio WhatsApp credentials not set; cannot send WhatsApp message.")
         return False
     try:
         client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+        recipient = WHATSAPP_NUMBER if str(WHATSAPP_NUMBER).startswith("+") else f"+{WHATSAPP_NUMBER}"
         message = client.messages.create(
             from_=f"whatsapp:{TWILIO_WHATSAPP_NUMBER}",
             body=body,
-            to=f"whatsapp:+{WHATSAPP_NUMBER}",
+            to=f"whatsapp:{recipient}",
         )
+        app.logger.info(f"Sent WhatsApp message to {recipient}: SID={message.sid}")
         return True
-    except Exception:
+    except Exception as e:
+        app.logger.exception("Failed to send WhatsApp message")
         return False
 
 
