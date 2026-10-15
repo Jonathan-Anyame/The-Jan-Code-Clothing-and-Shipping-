@@ -70,6 +70,16 @@ def init_db():
             )
             """
         )
+
+        # Migration: ensure leads.order_code exists for older DBs
+        cols = [r["name"] for r in conn.execute("PRAGMA table_info('leads')").fetchall()]
+        if "order_code" not in cols:
+            conn.execute("ALTER TABLE leads ADD COLUMN order_code TEXT")
+            rows = conn.execute("SELECT id FROM leads WHERE order_code IS NULL OR order_code = ''").fetchall()
+            for r in rows:
+                code = generate_order_code()
+                conn.execute("UPDATE leads SET order_code = ? WHERE id = ?", (code, r["id"]))
+
         existing = conn.execute(
             "SELECT 1 FROM shipments WHERE tracking_id = ?", ("TJC-DEMO",)
         ).fetchone()
