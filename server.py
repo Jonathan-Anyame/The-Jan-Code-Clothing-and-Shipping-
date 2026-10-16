@@ -1,7 +1,7 @@
 import os
 import smtplib
 from email.mime.text import MIMEText
-from urllib.parse import quote
+from urllib.parse import quote as url_quote
 
 from dotenv import load_dotenv
 from flask import (
@@ -22,6 +22,11 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-only-change-me")
+# Ensure database tables exist on startup
+try:
+    db.init_db()
+except Exception:
+    app.logger.exception("Database initialization failed at startup")
 
 WHATSAPP_NUMBER = os.environ.get("WHATSAPP_NUMBER", "+8613535824547")
 CONTACT_EMAIL = os.environ.get("CONTACT_EMAIL", "nyamejonathan9@gmail.com")
@@ -79,7 +84,11 @@ COUNTRIES = [
 
 def whatsapp_link(text=None):
     if text:
-        return f"https://wa.me/{WHATSAPP_NUMBER}?text={quote(text)}"
+        try:
+            return f"https://wa.me/{WHATSAPP_NUMBER}?text={url_quote(text)}"
+        except Exception:
+            app.logger.exception("Failed to build WhatsApp link")
+            return f"https://wa.me/{WHATSAPP_NUMBER}"
     return f"https://wa.me/{WHATSAPP_NUMBER}"
 
 
@@ -127,6 +136,7 @@ def send_email(subject, body, reply_to=None):
             smtp.sendmail(msg["From"], [CONTACT_EMAIL], msg.as_string())
         return True
     except Exception:
+        app.logger.exception("Failed to send email")
         return False
 
 
@@ -213,8 +223,14 @@ def quote():
             f"Budget: {budget or '—'}\n"
             f"Notes: {message or '—'}\n"
         )
-        send_email(f"Quote from {name}", body, reply_to=email)
-        send_whatsapp(body)
+        try:
+            send_email(f"Quote from {name}", body, reply_to=email)
+        except Exception:
+            app.logger.exception("send_email failed for quote %s", order_code)
+        try:
+            send_whatsapp(body)
+        except Exception:
+            app.logger.exception("send_whatsapp failed for quote %s", order_code)
         wa = (
             f"Hi, I want a sourcing quote from The Jan Code.\n\n"
             f"Order code: {order_code}\n"
