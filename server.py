@@ -43,8 +43,8 @@ TWILIO_WHATSAPP_NUMBER = os.environ.get("TWILIO_WHATSAPP_NUMBER", "")
 RATES = {
     "sea_per_cbm": 265,  # default shown across site (Accra)
     "air_per_kg": 19,
-    "sea_days": "30–45 days",
-    "air_days": "7–14 days",
+    "sea_days": "45-60 days",
+    "air_days": "7-14 days",
 
     # City-specific and category rates (from new rate poster)
     "sea_per_cbm_accra": 265,
@@ -81,6 +81,19 @@ COUNTRIES = [
     "Other",
 ]
 
+# Doorstep delivery pricing configuration. Each entry may be:
+# - {"type": "flat", "amount": 50}
+# - {"type": "per_cbm", "amount": 60}
+# - {"type": "per_kg", "amount": 2}
+# - {"type": "quoted"}
+DOORSTEP_PRICING = {
+    "Ghana": {"type": "flat", "amount": 50},
+    "Nigeria": {"type": "flat", "amount": 80},
+    "Kenya": {"type": "flat", "amount": 70},
+    "South Africa": {"type": "flat", "amount": 120},
+    "Other": {"type": "quoted"},
+}
+
 
 def whatsapp_link(text=None):
     # Build wa.me link using digits-only number and URL-encoded text.
@@ -96,6 +109,20 @@ def whatsapp_link(text=None):
     return f"https://wa.me/{digits}"
 
 
+def doorstep_estimate_for_country(country):
+    cfg = DOORSTEP_PRICING.get(country) or DOORSTEP_PRICING.get("Other")
+    if not cfg:
+        return "Quoted individually"
+    t = cfg.get("type")
+    if t == "flat":
+        return f"${cfg.get('amount')} (estimate)"
+    if t == "per_cbm":
+        return f"${cfg.get('amount')} per CBM (estimate)"
+    if t == "per_kg":
+        return f"${cfg.get('amount')} per kg (estimate)"
+    return "Quoted individually"
+
+
 @app.context_processor
 def inject_globals():
     return {
@@ -105,6 +132,7 @@ def inject_globals():
         "instagram_url": INSTAGRAM_URL,
         "snapchat_url": SNAPCHAT_URL,
         "rates": RATES,
+        "doorstep_pricing": DOORSTEP_PRICING,
         "is_admin": session.get("admin") is True,
     }
 
@@ -199,11 +227,19 @@ def quote():
         quantity = clean(request.form.get("quantity"), 80)
         shipping_method = clean(request.form.get("shipping_method"), 40)
         budget = clean(request.form.get("budget"), 80)
+        delivery_option = clean(request.form.get("delivery_option"), 120)
+        delivery_address = clean(request.form.get("delivery_address"), 500)
         message_field = clean(request.form.get("message"), 1500)
         # Validate required fields
         if not name or not email or not product:
             flash("Please fill in your name, email, and what you want to source.", "error")
             return render_template("quote.html", countries=COUNTRIES, form=request.form)
+        # If doorstep delivery chosen, require address
+        if delivery_option == "Doorstep delivery" and not delivery_address:
+            flash("Please provide a delivery address when Doorstep delivery is selected.", "error")
+            return render_template("quote.html", countries=COUNTRIES, form=request.form)
+        # Determine doorstep estimate string
+        doorstep_est = doorstep_estimate_for_country(country) if country else "Quoted individually"
         # Save lead first
         try:
             order_code = db.save_lead(
@@ -216,6 +252,9 @@ def quote():
                 quantity=quantity,
                 shipping_method=shipping_method,
                 budget=budget,
+                delivery_option=delivery_option,
+                delivery_address=delivery_address,
+                doorstep_estimate=doorstep_est,
                 message=message_field,
             )
         except Exception:
@@ -241,6 +280,11 @@ def quote():
             lines.append(f"Budget: {budget}")
         if shipping_method:
             lines.append(f"Shipping: {shipping_method}")
+        if delivery_option:
+            lines.append(f"Delivery: {delivery_option}")
+            if delivery_option == "Doorstep delivery" and delivery_address:
+                lines.append(f"Address: {delivery_address}")
+                lines.append(f"Doorstep estimate: {doorstep_est}")
         if message_field:
             lines.append(f"Notes: {message_field}")
         wa_message = "\n".join(lines)

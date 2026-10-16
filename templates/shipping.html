@@ -41,24 +41,45 @@
     <div class="calc-wrap">
         <h2>Freight estimate</h2>
         <p class="calc-lead">Rough cost using our published rates. Not a final invoice.</p>
-        <div class="calc" data-sea="{{ rates.sea_per_cbm }}" data-air="{{ rates.air_per_kg }}" data-sea-days="{{ rates.sea_days }}" data-air-days="{{ rates.air_days }}">
+        <div class="calc" data-sea="{{ rates.sea_per_cbm }}" data-air="{{ rates.air_per_kg }}" data-sea-days="{{ rates.sea_days }}" data-air-days="{{ rates.air_days }}" data-doorstep='{{ doorstep_pricing|tojson }}'>
             <div class="calc-toggle" role="tablist">
                 <button type="button" class="calc-mode active" data-mode="sea">Sea / CBM</button>
                 <button type="button" class="calc-mode" data-mode="air">Air / kg</button>
             </div>
+            <label for="calcCountry">Destination country</label>
+            <select id="calcCountry">
+                <option value="">Select a country</option>
+                {% for c in countries %}
+                <option value="{{ c }}">{{ c }}</option>
+                {% endfor %}
+            </select>
+
             <label for="calcInput" id="calcLabel">Cubic meters (CBM)</label>
             <input id="calcInput" type="number" min="0" step="0.01" value="1" inputmode="decimal">
+
+            <div>
+                <label><input type="checkbox" id="includeDoorstep"> Include doorstep delivery (estimate)</label>
+            </div>
+
             <div class="calc-result">
                 <div>
                     <span class="calc-kicker">Estimated freight</span>
                     <strong id="calcPrice">$0</strong>
                 </div>
                 <div>
+                    <span class="calc-kicker">Doorstep estimate</span>
+                    <strong id="calcDoorstep">—</strong>
+                </div>
+                <div>
+                    <span class="calc-kicker">Total (estimate)</span>
+                    <strong id="calcTotal">$0</strong>
+                </div>
+                <div>
                     <span class="calc-kicker">Typical transit</span>
                     <strong id="calcTime">{{ rates.sea_days }}</strong>
                 </div>
             </div>
-            <p class="calc-disclaimer">Does not include product cost, our sourcing fee, insurance, or destination customs. Restricted goods (batteries, liquids, replicas) may be refused or priced differently.</p>
+            <p class="calc-disclaimer">Does not include product cost, our sourcing fee, insurance, or destination customs. Restricted goods (batteries, liquids, replicas) may be refused or priced differently. Doorstep delivery covers customs clearance and local delivery to your address; duties and taxes are paid separately.</p>
         </div>
         <a href="{{ url_for('quote') }}" class="btn btn-primary mt-2">Turn this into a real quote</a>
     </div>

@@ -50,6 +50,9 @@ def init_db():
                 quantity TEXT,
                 shipping_method TEXT,
                 budget TEXT,
+                delivery_option TEXT,
+                delivery_address TEXT,
+                doorstep_estimate TEXT,
                 message TEXT,
                 created_at TEXT NOT NULL
             )
@@ -73,12 +76,24 @@ def init_db():
 
         # Migration: ensure leads.order_code exists for older DBs
         cols = [r["name"] for r in conn.execute("PRAGMA table_info('leads')").fetchall()]
+        # add order_code if missing
         if "order_code" not in cols:
             conn.execute("ALTER TABLE leads ADD COLUMN order_code TEXT")
             rows = conn.execute("SELECT id FROM leads WHERE order_code IS NULL OR order_code = ''").fetchall()
             for r in rows:
                 code = generate_order_code()
                 conn.execute("UPDATE leads SET order_code = ? WHERE id = ?", (code, r["id"]))
+            cols.append('order_code')
+        # add new delivery columns if missing
+        if "delivery_option" not in cols:
+            conn.execute("ALTER TABLE leads ADD COLUMN delivery_option TEXT")
+            cols.append('delivery_option')
+        if "delivery_address" not in cols:
+            conn.execute("ALTER TABLE leads ADD COLUMN delivery_address TEXT")
+            cols.append('delivery_address')
+        if "doorstep_estimate" not in cols:
+            conn.execute("ALTER TABLE leads ADD COLUMN doorstep_estimate TEXT")
+            cols.append('doorstep_estimate')
 
         existing = conn.execute(
             "SELECT 1 FROM shipments WHERE tracking_id = ?", ("JAN-DEMO",)
@@ -107,19 +122,19 @@ def generate_order_code():
 
 
 def save_lead(kind, name, email, phone="", country="", product="", quantity="",
-              shipping_method="", budget="", message=""):
+              shipping_method="", budget="", delivery_option="", delivery_address="", doorstep_estimate="", message=""):
     order_code = generate_order_code()
     with get_db() as conn:
         conn.execute(
             """
             INSERT INTO leads (
                 order_code, kind, name, email, phone, country, product, quantity,
-                shipping_method, budget, message, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+                shipping_method, budget, delivery_option, delivery_address, doorstep_estimate, message, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
             """,
             (
                 order_code, kind, name, email, phone, country, product, quantity,
-                shipping_method, budget, message,
+                shipping_method, budget, delivery_option, delivery_address, doorstep_estimate, message,
             ),
         )
     return order_code

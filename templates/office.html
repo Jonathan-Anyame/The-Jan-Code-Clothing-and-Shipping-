@@ -110,6 +110,9 @@
                         {% if lead.country %}To {{ lead.country }} · {% endif %}
                         {% if lead.quantity %}Qty {{ lead.quantity }} · {% endif %}
                         {% if lead.shipping_method %}{{ lead.shipping_method }}{% endif %}
+                        {% if lead.delivery_option %}<br>Delivery: {{ lead.delivery_option }}{% endif %}
+                        {% if lead.delivery_address %}<br>Address: {{ lead.delivery_address }}{% endif %}
+                        {% if lead.doorstep_estimate %}<br>Doorstep estimate: {{ lead.doorstep_estimate }}{% endif %}
                         {% if lead.message %}<br>{{ lead.message }}{% endif %}
                     </td>
                 </tr>

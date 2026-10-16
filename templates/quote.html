@@ -46,7 +46,7 @@
                         <input id="budget" name="budget" type="text" value="{{ form.get('budget', '') }}" placeholder="e.g. $800">
                     </div>
                 </div>
-
+ 
                 <label for="shipping_method">Shipping</label>
                 <select id="shipping_method" name="shipping_method">
                     <option value="Not sure">Not sure yet</option>
@@ -54,6 +54,17 @@
                     <option value="Air">Air — ${{ rates.air_per_kg }}/kg, {{ rates.air_days }}</option>
                 </select>
 
+                <label for="delivery_option">Delivery option</label>
+                <select id="delivery_option" name="delivery_option">
+                    <option value="Port pickup" {% if form.get('delivery_option') == 'Port pickup' %}selected{% endif %}>Port/airport pickup (I handle clearance and delivery)</option>
+                    <option value="Doorstep delivery" {% if form.get('delivery_option') == 'Doorstep delivery' %}selected{% endif %}>Doorstep delivery (you handle everything to my address)</option>
+                </select>
+
+                <div id="deliveryAddressWrap" style="display: {% if form.get('delivery_option') == 'Doorstep delivery' %}block{% else %}none{% endif %};">
+                    <label for="delivery_address">Delivery address (required for Doorstep delivery)</label>
+                    <textarea id="delivery_address" name="delivery_address" rows="2" placeholder="City, full address">{{ form.get('delivery_address', '') }}</textarea>
+                </div>
+ 
                 <label for="message">Anything else</label>
                 <textarea id="message" name="message" rows="3" placeholder="MOQ, colors, deadline, packaging…">{{ form.get('message', '') }}</textarea>
 
@@ -90,4 +101,18 @@
         </aside>
     </div>
 </section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function(){
+    var sel = document.getElementById('delivery_option');
+    var wrap = document.getElementById('deliveryAddressWrap');
+    function toggle(){
+        if(!sel || !wrap) return;
+        wrap.style.display = sel.value === 'Doorstep delivery' ? 'block' : 'none';
+    }
+    if(sel){ sel.addEventListener('change', toggle); toggle(); }
+})();
+</script>
 {% endblock %}
