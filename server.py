@@ -83,13 +83,17 @@ COUNTRIES = [
 
 
 def whatsapp_link(text=None):
+    # Build wa.me link using digits-only number and URL-encoded text.
+    digits = ''.join(ch for ch in str(WHATSAPP_NUMBER or '') if ch.isdigit())
+    if not digits:
+        digits = str(WHATSAPP_NUMBER or '')
     if text:
         try:
-            return f"https://wa.me/{WHATSAPP_NUMBER}?text={url_quote(text)}"
+            return f"https://wa.me/{digits}?text={url_quote(text)}"
         except Exception:
             app.logger.exception("Failed to build WhatsApp link")
-            return f"https://wa.me/{WHATSAPP_NUMBER}"
-    return f"https://wa.me/{WHATSAPP_NUMBER}"
+            return f"https://wa.me/{digits}"
+    return f"https://wa.me/{digits}"
 
 
 @app.context_processor
@@ -186,6 +190,7 @@ def quote():
     if request.method == "POST":
         if is_spam():
             return redirect(url_for("thanks", kind="quote"))
+        # Clean inputs
         name = clean(request.form.get("name"), 120)
         email = clean(request.form.get("email"), 180)
         phone = clean(request.form.get("phone"), 60)
@@ -194,57 +199,67 @@ def quote():
         quantity = clean(request.form.get("quantity"), 80)
         shipping_method = clean(request.form.get("shipping_method"), 40)
         budget = clean(request.form.get("budget"), 80)
-        message = clean(request.form.get("message"), 1500)
+        message_field = clean(request.form.get("message"), 1500)
+        # Validate required fields
         if not name or not email or not product:
             flash("Please fill in your name, email, and what you want to source.", "error")
             return render_template("quote.html", countries=COUNTRIES, form=request.form)
-        order_code = db.save_lead(
-            kind="quote",
-            name=name,
-            email=email,
-            phone=phone,
-            country=country,
-            product=product,
-            quantity=quantity,
-            shipping_method=shipping_method,
-            budget=budget,
-            message=message,
-        )
-        body = (
-            f"New sourcing quote\n\n"
-            f"Order code: {order_code}\n"
-            f"Name: {name}\n"
-            f"Email: {email}\n"
-            f"Phone: {phone or '—'}\n"
-            f"Country: {country or '—'}\n"
-            f"Product: {product}\n"
-            f"Quantity: {quantity or '—'}\n"
-            f"Shipping: {shipping_method or '—'}\n"
-            f"Budget: {budget or '—'}\n"
-            f"Notes: {message or '—'}\n"
-        )
+        # Save lead first
         try:
-            send_email(f"Quote from {name}", body, reply_to=email)
+            order_code = db.save_lead(
+                kind="quote",
+                name=name,
+                email=email,
+                phone=phone,
+                country=country,
+                product=product,
+                quantity=quantity,
+                shipping_method=shipping_method,
+                budget=budget,
+                message=message_field,
+            )
         except Exception:
-            app.logger.exception("send_email failed for quote %s", order_code)
+            app.logger.exception("Failed to save lead")
+            order_code = None
+        # Build a clean message, skipping empty optional fields
+        lines = ["New quote request"]
+        if order_code:
+            lines.append(f"Order code: {order_code}")
+        if name:
+            lines.append(f"Name: {name}")
+        if email:
+            lines.append(f"Email: {email}")
+        if phone:
+            lines.append(f"Phone/WhatsApp: {phone}")
+        if country:
+            lines.append(f"Ship to: {country}")
+        if product:
+            lines.append(f"Product: {product}")
+        if quantity:
+            lines.append(f"Quantity: {quantity}")
+        if budget:
+            lines.append(f"Budget: {budget}")
+        if shipping_method:
+            lines.append(f"Shipping: {shipping_method}")
+        if message_field:
+            lines.append(f"Notes: {message_field}")
+        wa_message = "\n".join(lines)
+        # Server-to-me: send via Twilio if configured
+        if TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN and TWILIO_WHATSAPP_NUMBER:
+            try:
+                sent = send_whatsapp(wa_message)
+                app.logger.info("send_whatsapp result: %s for %s", sent, order_code)
+            except Exception:
+                app.logger.exception("send_whatsapp raised exception for %s", order_code)
+        else:
+            app.logger.info("Twilio not configured; skipping server-to-WhatsApp send.")
+        # Try sending email copy if configured
         try:
-            send_whatsapp(body)
+            send_email(f"Quote from {name}", wa_message, reply_to=email)
         except Exception:
-            app.logger.exception("send_whatsapp failed for quote %s", order_code)
-        wa = (
-            f"Hi, I want a sourcing quote from The Jan Code.\n\n"
-            f"Order code: {order_code}\n"
-            f"Name: {name}\n"
-            f"Email: {email}\n"
-            f"Phone: {phone or '—'}\n"
-            f"Ship to: {country or '—'}\n"
-            f"Product: {product}\n"
-            f"Quantity: {quantity or '—'}\n"
-            f"Shipping: {shipping_method or '—'}\n"
-            f"Budget: {budget or '—'}\n"
-            f"{message}"
-        )
-        return redirect(url_for("thanks", kind="quote", wa=wa, order_code=order_code))
+            app.logger.exception("send_email failed for %s", order_code)
+        # Redirect to thanks with a wa param for fallback (visitor -> me)
+        return redirect(url_for("thanks", kind="quote", wa=wa_message, order_code=order_code or ""))
     return render_template("quote.html", countries=COUNTRIES, form={})
 
 
