@@ -81,7 +81,7 @@ def init_db():
                 conn.execute("UPDATE leads SET order_code = ? WHERE id = ?", (code, r["id"]))
 
         existing = conn.execute(
-            "SELECT 1 FROM shipments WHERE tracking_id = ?", ("TJC-DEMO",)
+            "SELECT 1 FROM shipments WHERE tracking_id = ?", ("JAN-DEMO",)
         ).fetchone()
         if not existing:
             conn.execute(
@@ -91,19 +91,19 @@ def init_db():
                 ) VALUES (?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))
                 """,
                 (
-                    "TJC-DEMO",
+                    "JAN-DEMO",
                     "Demo order",
                     "Accra, Ghana",
                     "Air",
                     "In transit",
-                    "Example shipment so you can try tracking. Real orders get a unique TJC code.",
+                    "Example shipment so you can try tracking. Real orders get a unique JAN code.",
                 ),
             )
 
 
 def generate_order_code():
-    """Generate a unique order code in format: TJC-XXXXXXXX"""
-    return f"TJC-{uuid.uuid4().hex[:8].upper()}"
+    """Generate a unique order code in format: JAN-XXXXXXXX"""
+    return f"JAN-{uuid.uuid4().hex[:8].upper()}"
 
 
 def save_lead(kind, name, email, phone="", country="", product="", quantity="",
@@ -156,7 +156,7 @@ def list_shipments():
 def next_tracking_id():
     with get_db() as conn:
         row = conn.execute("SELECT COALESCE(MAX(id), 0) + 1001 AS n FROM shipments").fetchone()
-        return f"TJC-{int(row['n'])}"
+        return f"JAN-{int(row['n'])}"
 
 
 def upsert_shipment(tracking_id, customer_name, destination, method, status, note):
